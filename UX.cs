@@ -134,6 +134,12 @@ public class UX
             return _banco.Contas[id]; */
     }
     
+    private decimal PegarValor()
+    {
+        decimal valor = Convert.ToDecimal(ReadLine() ?? "0");
+        return Math.Max(valor,0);
+    }
+
     private void MudarLimite()
     {
         var conta = EscolherConta("Mudar Limite");
@@ -144,7 +150,9 @@ public class UX
         Tela.CriarLinha();
         
         WriteLine("Digite o novo Limite:");
-        conta.Limite = Convert.ToInt32(ReadLine() ?? "0");
+        conta.Limite = Convert.ToInt32(PegarValor());
+
+        WriteLine($"Novo Limite: {conta.Limite:C}");
         Tela.CriarRodape();
     }
    
@@ -155,18 +163,18 @@ public class UX
         if (conta == null){return;}
 
         Tela.CriarTitulo($"Sacando dinheiro da conta {conta.Numero}");
-        WriteLine($"Saldo disponível: {conta.Saldo:C}");
+        WriteLine($"Saldo total disponível: {conta.SaldoDisponível:C}");
         Tela.CriarLinha();
         
         WriteLine("Digite o total a sacar:");
-        decimal total = Convert.ToDecimal(ReadLine() ?? "0");
+        decimal total = PegarValor();
 
-        if (total > conta.Saldo)
+        if (total > conta.Saldo+conta.Limite)
             WriteLine("Dinheiro requerido excede o Saldo");
         else
         {
             conta.Saldo -= total;
-            WriteLine($"Novo Saldo: {conta.Saldo:C}");
+            WriteLine($"Novo Saldo: {conta.Saldo:C} (Com Limite: {conta.SaldoDisponível})");
         }
         Tela.CriarRodape();
     }
@@ -181,10 +189,10 @@ public class UX
         Tela.CriarLinha();
         
         WriteLine("Digite o total a ser depositado:");
-        decimal total = Convert.ToDecimal(ReadLine() ?? "0");
+        conta.Saldo += PegarValor();
 
-        conta.Saldo += total;
         WriteLine($"Novo Saldo: {conta.Saldo:C}");
+
         Tela.CriarRodape();
     }
 }
